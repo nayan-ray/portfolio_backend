@@ -11,6 +11,7 @@ import helmet from "helmet";
 import mongoSanitize from "express-mongo-sanitize";
 import xss from "xss-clean"
 import { errorResponse } from './src/helper/response.js';
+import productRoute from './src/route/productRoute.js';
 
 
 const app = express();
@@ -20,13 +21,14 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(morgan('dev'));
 app.use(helmet())
-app.use(mongoSanitize());
-app.use(xss());
+// app.use(mongoSanitize());
+// app.use(xss());
 
 app.get('/', (req, res) => {
     res.send('Hello World!');
 });
 
+app.use("/api/v1/portfolio", productRoute)
 
 
 //client error handling
@@ -38,7 +40,13 @@ app.use((req,res,next)=>{
 
 //server error handling
 app.use((error,req,res,next)=>{
-  
+    if(error.code == "LIMIT_FILE_SIZE"){
+        error = createError(400,'File size is too large. Maximum limit is 2MB')
+    }
+    if(error.code == "ENOENT" ){
+        error = createError(404,'File not found')
+    }
+  console.log(error)
     return errorResponse(res,{
         statusCode :error.status,
         message : error.message,
