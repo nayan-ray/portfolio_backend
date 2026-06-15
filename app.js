@@ -12,6 +12,7 @@ import mongoSanitize from "express-mongo-sanitize";
 import xss from "xss-clean"
 import { errorResponse } from './src/helper/response.js';
 import productRoute from './src/route/productRoute.js';
+import productDetailsRoute from './src/route/productDetailsRoute.js';
 
 
 const app = express();
@@ -27,8 +28,9 @@ app.use(helmet())
 app.get('/', (req, res) => {
     res.send('Hello World!');
 });
-
+//api routes
 app.use("/api/v1/portfolio", productRoute)
+app.use("/api/v1/portfolio", productDetailsRoute)
 
 
 //client error handling
@@ -46,7 +48,7 @@ app.use((error,req,res,next)=>{
     if(error.code == "ENOENT" ){
         error = createError(404,'File not found')
     }
-  console.log(error)
+//   console.log(error)
     return errorResponse(res,{
         statusCode :error.status,
         message : error.message,
