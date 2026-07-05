@@ -8,8 +8,7 @@ import path from 'path';
 import { fileURLToPath } from "url";
 import helmet from "helmet";
 
-import mongoSanitize from "express-mongo-sanitize";
-import xss from "xss-clean"
+import xss from "xss";
 import { errorResponse } from './src/helper/response.js';
 import productRoute from './src/route/productRoute.js';
 import productDetailsRoute from './src/route/productDetailsRoute.js';
@@ -23,8 +22,27 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(morgan('dev'));
 app.use(helmet())
-// app.use(mongoSanitize());
-// app.use(xss());
+
+const sanitizeInput = (value) => {
+    if (typeof value === 'string') return xss(value);
+    if (Array.isArray(value)) {
+        return value.map((item) => sanitizeInput(item));
+    }
+    if (value && typeof value === 'object') {
+        Object.entries(value).forEach(([key, item]) => {
+            value[key] = sanitizeInput(item);
+        });
+        return value;
+    }
+    return value;
+};
+
+app.use((req, _res, next) => {
+    if (req.body && typeof req.body === 'object') sanitizeInput(req.body);
+    if (req.query && typeof req.query === 'object') sanitizeInput(req.query);
+    if (req.params && typeof req.params === 'object') sanitizeInput(req.params);
+    next();
+});
 
 app.use(cors())
 
