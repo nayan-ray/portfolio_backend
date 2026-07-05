@@ -13,6 +13,7 @@ import xss from "xss-clean"
 import { errorResponse } from './src/helper/response.js';
 import productRoute from './src/route/productRoute.js';
 import productDetailsRoute from './src/route/productDetailsRoute.js';
+import authRoute from "./src/route/authRoute.js"
 
 
 const app = express();
@@ -33,6 +34,7 @@ app.get('/', (req, res) => {
 //api routes
 app.use("/api/v1/portfolio", productRoute)
 app.use("/api/v1/portfolio", productDetailsRoute)
+app.use("/api/v1/portfolio", authRoute)
 
 
 //client error handling
