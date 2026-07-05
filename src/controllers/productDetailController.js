@@ -117,4 +117,19 @@ const deleteProductDetails = async (req, res, next) => {
     }
 }
 
-export { createProductDetails, getProductDetailsByProductId, updateProductDetails, deleteProductDetails };
+
+//delete all product details
+
+const deleteAllProductDetails = async (req, res, next) => {
+    try {
+        await ProductDetails.deleteMany({});
+        return successResponse(res,{
+            statusCode  : 200,
+            message  : 'All product details deleted successfully' ,
+        })
+    } catch (error) {
+        next(error);
+    }
+}
+
+export { createProductDetails, getProductDetailsByProductId, updateProductDetails, deleteProductDetails, deleteAllProductDetails };

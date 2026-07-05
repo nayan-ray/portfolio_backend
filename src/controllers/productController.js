@@ -5,7 +5,7 @@ import cloudinary from "../config/cloudinary.js";
 
 const createProduct = async (req, res, next)=>{
 
-    const { productName } = req.body;
+    const { productName, category } = req.body;
    
     try {
         
@@ -16,6 +16,7 @@ const createProduct = async (req, res, next)=>{
 
        const newProduct =  await Product.create({
             productName: productName,
+            category: category,
             productImg: result.secure_url,
             publicId: result.public_id
         });
@@ -103,4 +104,18 @@ const deleteProduct = async (req, res, next)=>{
     }
 }
 
-export { createProduct, getAllProducts, updateProduct, deleteProduct };
+//delete all products
+const deleteAllProducts = async (req, res, next)=>{
+    try {
+
+        await Product.deleteMany({});
+        return successResponse(res,{
+            statusCode  : 200,
+            message  : 'All products deleted successfully' ,
+        })
+    } catch (error) {
+        next(error);
+    }
+}
+
+export { createProduct, getAllProducts, updateProduct, deleteProduct, deleteAllProducts };
