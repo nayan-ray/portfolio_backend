@@ -62,7 +62,7 @@ app.use((req, _res, next) => {
 
 
 app.use(cors({
-  origin: "https://portfolio-frondend.vercel.app/", // exact frontend origin
+  origin: "https://portfolio-frondend.vercel.app", // exact frontend origin
   credentials: true
 }));
 
