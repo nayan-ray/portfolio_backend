@@ -38,6 +38,15 @@ app.use(cookieParser());
 app.use(morgan('dev'));
 app.use(helmet())
 
+
+app.use(cors({
+  origin: [
+    "http://localhost:5173",
+    "https://portfolio-frondend.vercel.app"
+  ],
+  credentials: true
+}));
+
 const sanitizeInput = (value) => {
     if (typeof value === 'string') return xss(value);
     if (Array.isArray(value)) {
@@ -61,10 +70,10 @@ app.use((req, _res, next) => {
 
 
 
-app.use(cors({
-  origin: "https://portfolio-frondend.vercel.app", // exact frontend origin
-  credentials: true
-}));
+// app.use(cors({
+//   origin: "https://portfolio-frondend.vercel.app", // exact frontend origin
+//   credentials: true
+// }));
 
 app.get('/', (req, res) => {
     res.send('Hello World!');
